@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Lotto from './lotto/Lotto';
+import BusanFestival from './festival/BusanFestival';
+import FestivalContents from './festival/FestivalContents';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import Todolist from './todo/Todolist';
+import Login from './Login';
+import { useAtomValue } from 'jotai';
+import { loginAtom } from './20/loginAtom';
+import Testts from './testts/Testts';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const isLogin = useAtomValue(loginAtom);
+
+  const pageMap = [
+    { name: "로그인", url: "/", element: <Login />, isHide: false},
+    { name: "로또", url: "/lotto", element: <Lotto />, isHide: false },
+    { name: "축제정보", url: "/festival", element: <BusanFestival />, isHide: false },
+    { name: "festivalcontent", url: "/festival/content", element: <FestivalContents />, isHide: true },
+    { name: "TodoList", url: "/todolist" , element: <Todolist />, isHide: false},
+    { name: "Test", url: "/testts" , element: <Testts />, isHide: false},
+  ];
+
+  // console.log(pageMap)
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <BrowserRouter>
+      <div className='w-full h-screen flex flex-col overflow-y-hidden'>
+        { isLogin ? <Header pageMap={pageMap} /> : <Header pageMap={[]}/>}
+        <main className='container mx-auto flex flex-col overflow-auto h-full'>
+          {<Routes>
+            {
+              pageMap.map((item, index) => {
+                return <Route path={item["url"]} element={item["element"]} />
+              })
+            }
+          </Routes>}
+        </main>
+        <Footer />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </BrowserRouter>
+  );
 }
 
 export default App
