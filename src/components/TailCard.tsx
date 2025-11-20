@@ -1,7 +1,13 @@
-import React from 'react'
 import reactImg from '../assets/react.svg'
 
-export default function TailCard({ imageSrc, title, description }) {
+interface TailCardProps {
+    imageSrc : string,
+    title : string,
+    description : string
+}
+export default function TailCard({ imageSrc, title, description } : TailCardProps) {
+    //let tags: React.ReactElement | React.ReactElement[] = [] // 태그를 쓰는 경우, ReactElement : JSX 를 변수에 저장.ㄴ
+
     return (
         <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 p-3 m-3">
             <div className="flex justify-center">

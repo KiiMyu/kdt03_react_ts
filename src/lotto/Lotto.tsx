@@ -7,11 +7,11 @@ import { useEffect } from "react";
 export default function Lotto() {
 
     // const [randNum, setRandNum] = useState([0, 0, 0, 0, 0, 0, 0]);
-    const [tags, setTags] = useState([]);
+    const [tags, setTags] = useState<React.ReactElement[]>([]);
 
     const shake = () => {
         setTags(tags => {
-            const newArr = [];
+            const newArr : number[] = [];
             for (let i = 0; i < 6; i++) {
                 let num = Math.floor(Math.random() * 45) + 1;
                 if(newArr.includes(num)) {
@@ -33,7 +33,7 @@ export default function Lotto() {
                 }
             }
 
-            const tagArr = newArr.map((number, index) => { return <TailBall key={`ball${index}`} number={number}/>}) // TODO : map 구조 복습해야함.
+            const tagArr = newArr.map((number, index) => { return <TailBall key={`ball${index}`} num={number}/>}) // TODO : map 구조 복습해야함.
             return tagArr; 
             // 나중에 let set1 = new set() 으로도 만들어 볼 수 있음.
         })
@@ -48,14 +48,6 @@ export default function Lotto() {
         <div className='flex flex-col justify-center items-center h-full'>
             <p className='text-5xl'>Lotto</p>
             <div className='flex flex-row m-5 justify-center items-center'>
-                {/* <TailBall number={randNum[0]} />
-                <TailBall number={randNum[1]} />
-                <TailBall number={randNum[2]} />
-                <TailBall number={randNum[3]} />
-                <TailBall number={randNum[4]} />
-                <TailBall number={randNum[5]} />
-                <p className='text-5xl'> + </p>
-                <TailBall number={randNum[6]} /> */}
                 {tags.slice(0, 6)}
                 <p className='text-5xl'> + </p>
                 {tags[6]}

@@ -1,29 +1,21 @@
 
-const BallType = {
-    0 : {
-        count : "bg-blue-500 text-white"
-    },
-    1 : {
-        count : "bg-red-500 text-white"
-    },
-    2 : {
-        count : "bg-yellow-500 text-white"
-    }, 
-    3 : {
-        count : "bg-purple-500 text-white"
-    },
-    4 : {
-        count : "bg-black text-white"
-    },
-}
+const BallType = [
+    "bg-blue-500 text-white",
+    "bg-red-500 text-white",
+    "bg-yellow-500 text-white",
+    "bg-purple-500 text-white",
+    "bg-black text-white"
+] as const;
 
-export default function TailBall({number}) {
-    const ballColor = BallType[Math.floor(number / 10)]
-    console.log(number)
+interface TailBallProps {
+    num: number
+}
+export default function TailBall({ num }: TailBallProps) {
+    console.log(num)
 
     return (
-        <div className={`w-20 h-20 rounded-full ${ballColor.count} flex justify-center items-center m-2`}>
-            {number}
+        <div className={`w-20 h-20 rounded-full ${/*ballColor.count*/ BallType[Math.floor(num / 10)]} flex justify-center items-center m-2`}>
+            {num}
         </div>
     )
 }

@@ -1,16 +1,24 @@
 import TailButton from '../components/TailButton'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { supabase } from "../supabase/client";
 
-export default function TodoItem({ todo, todos, setTodos, getTodos }) {
-    //const [todos, setTodos] = useAtom(todosAtom)
-    //const [todos, setTodos] = useState([])
-    const [isEdit, setIsEdit] = useState(false)
-    const [editText, setEditText] = useState(todo.text)
+interface TodoType {
+    id: number,
+    completed: boolean,
+    text: string,
+}
+
+interface TodoItemProps {
+    todo : TodoType,
+    getTodos : () => void
+
+}
+
+export default function TodoItem({ todo, getTodos } : TodoItemProps) {
+    const [isEdit, setIsEdit] = useState<boolean>(false)
+    const [editText, setEditText] = useState<string>(todo.text)
 
     const handleToggle = async () => {
-        // const newItem = todos.map( t => t.id == todo.id ? {...t, completed : !todo.completed} : t)
-        // setTodos(newItem)
 
         const { error } = await supabase
             .from('todos')
@@ -24,9 +32,7 @@ export default function TodoItem({ todo, todos, setTodos, getTodos }) {
     }
 
     const handleSave = async () => {
-        // const newItem = todos.map(t => t.id == todo.id ? { ...t, text: t.text = editText } : t)
-        // setTodos(newItem)
-        // setIsEdit(false)
+
         const { error } = await supabase
             .from('todos')
             .update({ text: editText })
@@ -55,14 +61,6 @@ export default function TodoItem({ todo, todos, setTodos, getTodos }) {
             getTodos();
         }
     }
-
-    // useEffect(() => {
-    //     if(todos.length == 0) {
-    //         return
-    //     }
-    //     console.log(todos)
-    //     setTodo(todos)
-    // },[todos])
 
     return (
         <div className="flex flex-row justify-center max-w-3xl w-full my-4">

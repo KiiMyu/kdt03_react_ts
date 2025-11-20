@@ -1,5 +1,4 @@
-import React from 'react'
-import { useLocation, useNavigate, Link } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 
 export default function FestivalContents() {
     const location = useLocation();

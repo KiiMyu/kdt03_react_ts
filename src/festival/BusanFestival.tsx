@@ -1,16 +1,30 @@
 import React from 'react'
 import TailCard from '../components/TailCard'
-import TailButton from '../components/TailButton';
 import { useRef, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+
+interface FestivalJsonType {
+    getFestivalKr: {
+        item: [
+            {
+                UC_SEQ: number,
+                GUGUN_NM: string,
+                MAIN_TITLE: string,
+                ITEMCNTNTS: string,
+                MAIN_IMG_THUMB: string,
+                // [key : string]: string | number; // 필요시 key는 이렇게 사용.
+            }
+        ]
+    }
+}
 
 
 export default function BusanFestival() {
 
-    let searchText = useRef();
-    const [jsonData, setJsonData] = useState();
-    const [selectCountry, setSelectCountry] = useState('');
-    const [gulist, setGulist] = useState([]);
+    let searchText = useRef<HTMLSelectElement>(null);
+    const [jsonData, setJsonData] = useState<FestivalJsonType>();
+    const [selectCountry, setSelectCountry] = useState<string>('');
+    const [gulist, setGulist] = useState<string[]>([]);
 
     const location = useLocation();
     const gugunItem = location.state;
@@ -30,14 +44,10 @@ export default function BusanFestival() {
         }
     }
 
-    const ChangeSelectValue = (e) => {
+    const ChangeSelectValue = (e: React.ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
         console.log("value Change! " + e.target.value);
         setSelectCountry(e.target.value);
-    }
-
-    const ClickCardEvent = () => {
-
     }
 
     useEffect(() => {
@@ -45,7 +55,7 @@ export default function BusanFestival() {
     }, [])
 
     useEffect(() => {
-        if (jsonData == undefined || jsonData.length == 0) {
+        if (jsonData == undefined || jsonData.getFestivalKr.item == undefined) {
             console.log("data not initialize!")
             return;
         }
@@ -71,13 +81,13 @@ export default function BusanFestival() {
             </div>
             <div className='p-5 grid grid-cols-3 overflow-y-scroll'>
                 {
-                    jsonData && jsonData.getFestivalKr.item.map((item, index) => (
+                    jsonData && jsonData.getFestivalKr.item.map((item, index: number) => (
                         selectCountry == '' || selectCountry == item.GUGUN_NM ?
                             <Link to="/festival/content" key={item.UC_SEQ + index} state={{ item }} >
                                 <TailCard key={index} imageSrc={item.MAIN_IMG_THUMB}
                                     title={item.MAIN_TITLE.indexOf('(') != -1 ? item.MAIN_TITLE.substring(0, item.MAIN_TITLE.indexOf('(')) : item.MAIN_TITLE}
                                     description={item.ITEMCNTNTS.length > 30 ? item.ITEMCNTNTS.substring(0, 100) + "..." : item.ITEMCNTNTS}
-                                    clickEvent={ClickCardEvent} /> </Link> :
+                                /> </Link> :
                             ''
 
                     ))

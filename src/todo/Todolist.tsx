@@ -2,40 +2,22 @@ import TodoInput from "./TodoInput"
 import TodoItem from "./TodoItem"
 // import { useAtomValue } from "jotai"
 // import { todosAtom, completedAtom, incompletedAtom } from "./AtomsTodo"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { supabase } from "../supabase/client"
+// import type { TodoData } from "./todoData" // 선언해서 가져와서 쓸 수 있음.
+
+interface TodoType {
+    id: number,
+    completed: boolean,
+    text: string,
+}
 
 export default function Todolist() {
-    // const todos = useAtomValue(todosAtom);
-    // const completed = useAtomValue(completedAtom)
-    // const incompleted = useAtomValue(incompletedAtom)
-    const [todos, setTodos] = useState([]);
-    const [completed, setCompleted] = useState(0);
-    const [incompleted, setIncompleted] = useState(0);
-    const todoRef = useRef('');
-
-    // useEffect(() => {
-    //     const newItem = {
-    //         id: 1,
-    //         text: "리액트 공부",
-    //         completed: false,
-    //     }
-
-    //     // 자바스크립트 객체 -> 문자열
-    //     localStorage.setItem("todo", JSON.stringify(newItem))
-
-    //     // 문자열 -> 자바스크립트 객체
-    //     const todoss = JSON.parse(localStorage.getItem("todo"))
-
-    //     console.log(todoss);
-    // }, [])
+    const [todos, setTodos] = useState<TodoType[]>([]);
+    const [completed, setCompleted] = useState<number>(0);
+    const [incompleted, setIncompleted] = useState<number>(0);
 
     useEffect(() => {
-        // if(localStorage.getItem("todo") == undefined) {
-        //     return
-        // }
-        // const localValue = JSON.parse(localStorage.getItem("todo")) || []
-        // setTodos(localValue)
         try {
             getTodos()
         } catch (e) {
@@ -48,22 +30,18 @@ export default function Todolist() {
         setIncompleted(todos.filter(todo => !todo["completed"]).length)
     }, [todos])
 
-    const handleSave = (newItem) => {
-        setTodos(newItem)
-        console.log(newItem)
-        localStorage.setItem("todo", JSON.stringify(newItem));
-    }
-
     const getTodos = async () => {
         const { data, error } = await supabase
         .from('todos')
         .select('*')
         .order('id', {ascending: false})
 
+        console.log(data)
+
         if( error ) {
             console.error('Error fetching todos : ', error)
         } else {
-            setTodos(data)
+            setTodos(data || [])
         }
     }
 
@@ -76,9 +54,9 @@ export default function Todolist() {
             focus:outline-none focus:ring-2 focus:ring-blue-600">
                 전채: {todos.length}개 | 완료: {completed}개 | 미완료: {incompleted}개
             </div>
-            <TodoInput todos={todos} setTodos={handleSave} getTodos={getTodos}/>
+            <TodoInput todos={todos} getTodos={getTodos}/>
             {
-                todos && todos.map((item, index) => <TodoItem key={item["id"]} todo={item} todos={todos} setTodos={handleSave} getTodos={getTodos}/>)
+                todos && todos.map(item => <TodoItem key={item["id"]} todo={item} getTodos={getTodos}/>)
             }
         </div>
     )

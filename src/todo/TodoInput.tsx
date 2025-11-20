@@ -1,14 +1,23 @@
-import React from 'react'
 import TailButton from '../components/TailButton'
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 // import { useSetAtom } from 'jotai'
 // import { todosAtom } from './AtomsTodo'
 import { supabase } from "../supabase/client";
 
-export default function TodoInput({ todos, setTodos, getTodos }) {
-    //const setTodos = useSetAtom(todosAtom)
-    //const [todos, setTodos] = useState([]);
-    const inRef = useRef()
+interface TodoType {
+    id: number,
+    completed: boolean,
+    text: string,
+}
+
+interface TodoItemProps {
+    todos : TodoType[],
+    getTodos : () => void
+
+}
+
+export default function TodoInput({ todos, getTodos } : TodoItemProps) {
+    const inRef = useRef(null as unknown as HTMLInputElement);
 
     const handleAdd = async () => {
         if (inRef.current.value == "") {
@@ -16,7 +25,7 @@ export default function TodoInput({ todos, setTodos, getTodos }) {
             inRef.current.focus();
             return;
         }
-        const { data, error } = await supabase
+        const {/* data,*/ error } = await supabase
             .from('todos')
             .insert([
                 { text: inRef.current.value, completed: false },
